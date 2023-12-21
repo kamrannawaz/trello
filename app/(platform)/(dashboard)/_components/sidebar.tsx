@@ -24,7 +24,7 @@ const Sidebar = ({ storageKey = "t-sidebar-state" }: SidebarProps) => {
   const { organization: activeOrganization, isLoaded: isLoadedOrg } =
     useOrganization();
   const { userMemberships, isLoaded: isLoadedOrgList } = useOrganizationList({
-    userMemberships: { infinite: true }
+    userMemberships: { infinite: true },
   });
 
   const defaultAccordianValue: string[] = Object.keys(expanded).reduce(
@@ -40,7 +40,20 @@ const Sidebar = ({ storageKey = "t-sidebar-state" }: SidebarProps) => {
   if (!isLoadedOrg || !isLoadedOrgList || userMemberships.isLoading) {
     return (
       <>
-        <Skeleton />
+        <div className="flex items-center justify-between mb-2">
+          <Skeleton className="h-10 w-[50%]" />
+          <Skeleton className="h-10 w-10" />
+        </div>
+        <div className="space-y-2">
+          <NavItem.Skeleton />
+          <NavItem.Skeleton />
+          <NavItem.Skeleton />
+        </div>
+        <div className="space-y-2 mt-6">
+          <NavItem.Skeleton />
+          <NavItem.Skeleton />
+          <NavItem.Skeleton />
+        </div>
       </>
     );
   }
@@ -48,7 +61,7 @@ const Sidebar = ({ storageKey = "t-sidebar-state" }: SidebarProps) => {
   const onExpand = (id: string) => {
     setExpanded((curr) => ({
       ...curr,
-      [id]: !expanded[id]
+      [id]: !expanded[id],
     }));
   };
 
