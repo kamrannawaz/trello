@@ -10,21 +10,28 @@ import { InputType, ReturnType } from "./types";
 import { CreateBoard } from "./schema";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
-    const { userId } = auth();
+    const { userId, orgId } = auth();
 
-    if (!userId) {
+    if (!userId || !orgId) {
         return {
-            error: "You must be logged in to create a board"
+            error: "Unauthorized"
         }
     }
 
-    const { title } = data;
+    const { title, image } = data;
+    const [imageId, imageThumbUrl, imageFullUrl, imageLinkHTML, imageUserName] = image.split("|");
+
+    if(!imageId || !imageThumbUrl || !imageFullUrl || !imageLinkHTML || !imageUserName){
+        return {
+            error: "Missing fields, failed to create borad"
+        }
+    }
 
     let board;
 
     try {
         board = await db.board.create({
-            data: { title }
+            data: { title, orgId, imageId, imageThumbUrl, imageFullUrl, imageLinkHTML, imageUserName }
         });
 
     } catch (error) {
