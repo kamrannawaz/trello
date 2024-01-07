@@ -20,7 +20,7 @@ export const ListContainer = ({ boardId, data }: ListContainerProps) => {
 
   return (
     <ol className="flex gap-x-3 h-full">
-      {orderedData.map((list, index) => {
+      {orderedData?.map((list, index) => {
         return <ListItem key={list.id} index={index} data={list} />;
       })}
       <ListForm />

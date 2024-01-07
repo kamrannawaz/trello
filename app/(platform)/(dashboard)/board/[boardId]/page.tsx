@@ -16,28 +16,30 @@ const BoardIdPage = async ({ params }: BoardIdPageProps) => {
     redirect("/select-org");
   }
 
-  const list = await db.list.findMany({
+  const list = await db.list?.findMany({
     where: {
       boardId: params.boardId,
       board: {
-        orgId,
-      },
+        orgId
+      }
     },
     include: {
       cards: {
         orderBy: {
-          order: "asc",
-        },
-      },
+          order: "asc"
+        }
+      }
     },
     orderBy: {
-      order: "asc",
-    },
+      order: "asc"
+    }
   });
 
-  return <div className="p-4 h-full overflow-x-auto">
-    <ListContainer boardId={params.boardId} data={list}/>
-  </div>;
+  return (
+    <div className="p-4 h-full overflow-x-auto">
+      <ListContainer boardId={params.boardId} data={list} />
+    </div>
+  );
 };
 
 export default BoardIdPage;
