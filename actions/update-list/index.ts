@@ -8,32 +8,41 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { UpdateList } from "./schema";
+import { createAuditLog } from "@/lib/create-audit-log";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
-const handler = async(data: InputType): Promise<ReturnType>=>{
+const handler = async (data: InputType): Promise<ReturnType> => {
     const { userId, orgId } = auth();
-    
-    if(!userId || !orgId){
+
+    if (!userId || !orgId) {
         return {
             error: "Unauthorized"
         }
     }
 
-    const { title,id, boardId } = data;
+    const { title, id, boardId } = data;
 
     let list;
-    try{
+    try {
         list = await db.list.update({
-            where:{
+            where: {
                 id: id,
                 boardId: boardId,
-                board:{
+                board: {
                     orgId: orgId
                 }
             },
-            data:{title}
-            
+            data: { title }
+
         });
-    }catch(error){
+
+        await createAuditLog({
+            entityTitle: list.title,
+            entityId: list.id,
+            entityType: ENTITY_TYPE.CARD,
+            action: ACTION.UPDATE,
+        })
+    } catch (error) {
         return {
             error: "Failed to update."
         }

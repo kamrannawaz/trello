@@ -9,26 +9,35 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types";
 import { DeleteBoard } from "./schema";
+import { createAuditLog } from "@/lib/create-audit-log";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
-const handler = async(data: InputType): Promise<ReturnType>=>{
+const handler = async (data: InputType): Promise<ReturnType> => {
     const { userId, orgId } = auth();
-    
-    if(!userId || !orgId){
+
+    if (!userId || !orgId) {
         return {
             error: "Unauthorized"
         }
     }
 
-    const {id } = data;
+    const { id } = data;
 
-    try{
-        await db.board.delete({
-            where:{
+    try {
+        const board = await db.board.delete({
+            where: {
                 id: id,
                 orgId
             }
         });
-    }catch(error){
+
+        await createAuditLog({
+            entityTitle: board.title,
+            entityId: board.id,
+            entityType: ENTITY_TYPE.BOARD,
+            action: ACTION.DELETE,
+        })
+    } catch (error) {
         return {
             error: "Failed to delete."
         }
