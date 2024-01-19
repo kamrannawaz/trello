@@ -1,17 +1,16 @@
 "use client";
 
-import { Layout } from "lucide-react";
-
-import { FormInput } from "@/components/form/form-input";
-import { CardWithList } from "@/types";
 import { ElementRef, useRef, useState } from "react";
+import { Layout } from "lucide-react";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { CardWithList } from "@/types";
+import { FormInput } from "@/components/form/form-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useParams } from "next/navigation";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAction } from "@/hooks/use-action";
-import { updateBoard } from "@/actions/update-board";
 import { updateCard } from "@/actions/update-card";
-import { toast } from "sonner";
 
 interface HeaderProps {
   data: CardWithList;
